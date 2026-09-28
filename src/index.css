@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-navy: #071B52;
+    --color-royal: #0757D9;
+    --color-electric: #008CFF;
+    --color-cyan: #08D9F5;
+    --color-aqua: #00D9E8;
+    --color-canvas: #F5F8FC;
+    --color-dark: #172033;
+    --color-secondary: #667085;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #F5F8FC;
+    color: #172033;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Universal invisible scrollbar requirement */
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  *::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+    display: none !important;
+  }
+}
+
+.font-brand {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Safe area padding utilities for mobile notch and home indicators */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 12px);
+}
+
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+
+.pb-nav {
+  padding-bottom: calc(90px + max(env(safe-area-inset-bottom, 0px), 16px));
+}
+
+/* Tizara Signature Brand Gradient */
+.bg-tizara-gradient {
+  background: linear-gradient(135deg, #071B52 0%, #0757D9 42%, #008CFF 78%, #08D9F5 100%);
+}
+
+.bg-tizara-vibrant {
+  background: linear-gradient(135deg, #0757D9 0%, #008CFF 60%, #08D9F5 100%);
+}
+
+.bg-tizara-subtle {
+  background: linear-gradient(180deg, #F0F6FF 0%, #F5F8FC 100%);
+}
+
+.text-tizara-gradient {
+  background: linear-gradient(135deg, #071B52 0%, #0757D9 40%, #008CFF 75%, #08D9F5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* UIcons Support for fi-sr-user-md (Doctors) and fi-ss-graduation-cap (Education) */
+@font-face {
+  font-family: "uicons-solid-rounded";
+  src: url("/fonts/uicons-solid-rounded.woff2") format("woff2"),
+       url("https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/webfonts/uicons-solid-rounded.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "uicons-solid-straight";
+  src: url("/fonts/uicons-solid-straight.woff2") format("woff2"),
+       url("https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/webfonts/uicons-solid-straight.woff2") format("woff2");
+  font-display: swap;
+}
+
+i[class^="fi-sr-"]:before, i[class*=" fi-sr-"]:before, span[class^="fi-sr-"]:before, span[class*="fi-sr-"]:before {
+  font-family: "uicons-solid-rounded" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+i[class^="fi-ss-"]:before, i[class*=" fi-ss-"]:before, span[class^="fi-ss-"]:before, span[class*="fi-ss-"]:before {
+  font-family: "uicons-solid-straight" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fi-sr-user-md:before {
+  content: "\f0c2";
+}
+
+.fi-ss-graduation-cap:before {
+  content: "\e7a5";
+}
+

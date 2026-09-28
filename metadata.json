@@ -1,0 +1,6 @@
+{
+  "name": "Tizara - Business Discovery",
+  "description": "Discover local businesses, services, professionals, deals, and offers with Tizara. Discover • Connect • Grow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
