@@ -216,26 +216,22 @@ export const MapDiscoveryScreen: React.FC<MapDiscoveryScreenProps> = ({
             onKeyDown={(e) => e.key === 'Enter' && onSelectBusiness(selectedBusiness)}
             className="w-full bg-white rounded-2xl p-3.5 shadow-2xl border border-slate-200 flex items-center gap-3 cursor-pointer active:scale-[0.99] transition-transform"
           >
-            {/* Visual media */}
-            <div className="w-18 h-18 rounded-xl shrink-0 flex items-center justify-center text-white font-bold text-base shadow-sm relative overflow-hidden bg-slate-800">
+            {/* Visual media - Clean image */}
+            <div className="w-18 h-18 rounded-xl shrink-0 overflow-hidden bg-slate-100 relative">
               {selectedBusiness.coverImage && (
                 selectedBusiness.coverImage.startsWith('http') || selectedBusiness.coverImage.startsWith('/') ? (
                   <img
                     src={selectedBusiness.coverImage}
                     alt={selectedBusiness.name}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div
-                    className="absolute inset-0 w-full h-full"
+                    className="w-full h-full"
                     style={{ background: selectedBusiness.coverImage }}
                   />
                 )
               )}
-              <div className="absolute inset-0 bg-black/20" />
-              <span className="relative z-10 text-white font-bold text-xs bg-black/40 px-1.5 py-0.5 rounded backdrop-blur-xs">
-                {selectedBusiness.logo}
-              </span>
             </div>
 
             {/* Info */}

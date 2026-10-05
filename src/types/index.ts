@@ -125,6 +125,13 @@ export type ScreenId =
   | 'list-business'
   | 'my-business'
   | 'notifications'
-  | 'profile';
+  | 'profile'
+  | 'pricing-plans'
+  | 'ac-service-detail'
+  | 'pest-control-detail'
+  | 'electrician-detail'
+  | 'cleaning-services-detail'
+  | 'packers-movers-detail'
+  | 'plumbing-services-detail';
 
 export type BottomTabId = 'home' | 'explore' | 'add' | 'favorites' | 'profile';

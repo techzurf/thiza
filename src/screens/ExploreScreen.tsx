@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { SlidersHorizontal, Map, Sparkles, Star, Tag, Clock } from 'lucide-react';
+import { Map } from 'lucide-react';
 import { Business, Category } from '../types';
 import { CATEGORIES } from '../data/mockBusinesses';
 import { SearchBar } from '../components/common/SearchBar';
 import { BusinessCard } from '../components/common/BusinessCard';
 import { CategoryCard } from '../components/common/CategoryCard';
+import { filterBusinessesByCategory } from '../utils/categoryFilter';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ExploreScreenProps {
   businesses: Business[];
@@ -16,7 +18,6 @@ interface ExploreScreenProps {
   onOpenSearch: () => void;
 }
 
-type FilterChip = 'all' | 'nearby' | 'topRated' | 'openNow' | 'offers';
 type SortOption = 'recommended' | 'distance' | 'rating' | 'newest';
 
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({
@@ -24,36 +25,28 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
   favorites,
   onToggleFavorite,
   onSelectBusiness,
-  onSelectCategory,
+  onSelectCategory: _onSelectCategory,
   onOpenMap,
   onOpenSearch,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeChip, setActiveChip] = useState<FilterChip>('all');
   const [activeSort, setActiveSort] = useState<SortOption>('recommended');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const { t, language } = useLanguage();
 
-  const filterChips: { id: FilterChip; label: string }[] = [
-    { id: 'all', label: 'All' },
-    { id: 'nearby', label: 'Nearby (< 2 km)' },
-    { id: 'topRated', label: 'Top Rated (4.7+)' },
-    { id: 'openNow', label: 'Open Now' },
-    { id: 'offers', label: 'With Offers' },
-  ];
-
-  const sortOptions: { id: SortOption; label: string }[] = [
-    { id: 'recommended', label: 'Recommended' },
-    { id: 'distance', label: 'Distance' },
-    { id: 'rating', label: 'Rating' },
-    { id: 'newest', label: 'Newest' },
-  ];
+  const sortOptions: { id: SortOption; label: string }[] = useMemo(() => [
+    { id: 'recommended', label: t('Recommended') },
+    { id: 'distance', label: t('Nearest First') },
+    { id: 'rating', label: t('Highest Rated') },
+    { id: 'newest', label: t('Trending & Popular') },
+  ], [t]);
 
   const filteredBusinesses = useMemo(() => {
     let result = [...businesses];
 
     // Category filter
     if (selectedCategoryId) {
-      result = result.filter((b) => b.category === selectedCategoryId);
+      result = filterBusinessesByCategory(result, selectedCategoryId);
     }
 
     // Search query filter
@@ -67,28 +60,17 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
       );
     }
 
-    // Filter chip
-    if (activeChip === 'nearby') {
-      result = result.filter((b) => parseFloat(b.distance) <= 2.0);
-    } else if (activeChip === 'topRated') {
-      result = result.filter((b) => b.rating >= 4.7);
-    } else if (activeChip === 'openNow') {
-      result = result.filter((b) => b.isOpen);
-    } else if (activeChip === 'offers') {
-      result = result.filter((b) => b.offers.length > 0);
-    }
-
     // Sort
     if (activeSort === 'rating') {
       result.sort((a, b) => b.rating - a.rating);
     } else if (activeSort === 'distance') {
       result.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
     } else if (activeSort === 'newest') {
-      result.sort((a, b) => b.reviewCount - a.reviewCount);
+      result.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
     }
 
     return result;
-  }, [businesses, selectedCategoryId, searchQuery, activeChip, activeSort]);
+  }, [businesses, selectedCategoryId, searchQuery, activeSort]);
 
   return (
     <div className="w-full min-h-[100dvh] bg-[#F5F8FC] pb-nav">
@@ -97,20 +79,20 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
         <div className="flex items-center justify-between gap-2 mb-3">
           <div>
             <h1 className="font-brand font-extrabold text-2xl text-[#172033] tracking-tight">
-              Explore Tizara
+              {t('Explore')} Tizara
             </h1>
             <p className="text-xs text-[#667085]">
-              Discover Chennai’s verified businesses
+              {t('Discover verified businesses across Chennai')}
             </p>
           </div>
 
           <button
             type="button"
             onClick={onOpenMap}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-tizara-vibrant text-white font-bold text-xs shadow-xs active:scale-95 transition-transform"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-tizara-vibrant text-white font-bold text-xs shadow-xs active:scale-95 transition-transform cursor-pointer"
           >
             <Map className="w-4 h-4 stroke-[2.2]" />
-            <span>Map View</span>
+            <span>{language === 'Tamil' ? 'வரைபடம்' : 'Map View'}</span>
           </button>
         </div>
 
@@ -128,15 +110,15 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-[#667085] uppercase tracking-wider">
-              Filter by Category
+              {t('FILTER BY CATEGORY')}
             </span>
             {selectedCategoryId && (
               <button
                 type="button"
                 onClick={() => setSelectedCategoryId(null)}
-                className="text-xs font-bold text-[#0757D9]"
+                className="text-xs font-bold text-[#0757D9] cursor-pointer"
               >
-                Clear
+                {t('Clear')}
               </button>
             )}
           </div>
@@ -155,39 +137,18 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
           </div>
         </div>
 
-        {/* Filter Chips Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4">
-          {filterChips.map((chip) => {
-            const isActive = activeChip === chip.id;
-            return (
-              <button
-                key={chip.id}
-                type="button"
-                onClick={() => setActiveChip(chip.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                  isActive
-                    ? 'bg-[#0757D9] text-white shadow-xs'
-                    : 'bg-white text-[#667085] border border-[#E2E8F0] hover:bg-slate-50'
-                }`}
-              >
-                {chip.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Sort Selector Bar */}
-        <div className="flex items-center justify-between text-xs text-[#667085] pt-1 border-t border-slate-200">
+        {/* Sort Selector Bar & Counter */}
+        <div className="flex items-center justify-between text-xs text-[#667085] pt-2 border-t border-slate-200">
           <span className="font-semibold">
-            Showing <strong className="text-[#172033]">{filteredBusinesses.length}</strong> businesses
+            {t('Showing')} <strong className="text-[#172033]">{filteredBusinesses.length}</strong> {t('businesses')}
           </span>
 
           <div className="flex items-center gap-1.5">
-            <span className="font-medium">Sort:</span>
+            <span className="font-medium">{t('Sort:')}</span>
             <select
               value={activeSort}
               onChange={(e) => setActiveSort(e.target.value as SortOption)}
-              className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-xs font-bold text-[#071B52] outline-none"
+              className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-xs font-bold text-[#071B52] outline-none cursor-pointer"
             >
               {sortOptions.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -214,21 +175,20 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
           {filteredBusinesses.length === 0 && (
             <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6">
               <p className="font-bold text-base text-[#172033]">
-                No businesses match your filter
+                {language === 'Tamil' ? 'வணிகங்கள் எதுவும் பொருந்தவில்லை' : 'No businesses match your filter'}
               </p>
               <p className="text-xs text-[#667085] mt-1">
-                Try selecting a different filter or reset your search criteria.
+                {t('Try another business name, category or service.')}
               </p>
               <button
                 type="button"
                 onClick={() => {
-                  setActiveChip('all');
                   setSelectedCategoryId(null);
                   setSearchQuery('');
                 }}
-                className="mt-4 px-4 py-2 bg-[#0757D9] text-white text-xs font-bold rounded-xl"
+                className="mt-4 px-4 py-2 bg-[#0757D9] text-white text-xs font-bold rounded-xl cursor-pointer"
               >
-                Reset Filters
+                {t('Reset Filters')}
               </button>
             </div>
           )}

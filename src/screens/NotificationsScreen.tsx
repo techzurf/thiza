@@ -1,15 +1,8 @@
-import React, { useState } from 'react';
-import {
-  ArrowLeft,
-  Bell,
-  Tag,
-  MessageSquare,
-  Sparkles,
-  CheckCheck,
-  ChevronRight,
-} from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ArrowLeft, Bell, Tag, MessageSquare, Sparkles, CheckCheck } from 'lucide-react';
 import { AppNotification } from '../types';
 import { EmptyState } from '../components/common/EmptyState';
+import { useLanguage } from '../context/LanguageContext';
 
 interface NotificationsScreenProps {
   notifications: AppNotification[];
@@ -27,13 +20,14 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
   onNotificationClick,
 }) => {
   const [activeTab, setActiveTab] = useState<NotifTab>('all');
+  const { t } = useLanguage();
 
-  const tabs: { id: NotifTab; label: string }[] = [
-    { id: 'all', label: 'All' },
-    { id: 'offer', label: 'Offers' },
-    { id: 'enquiry', label: 'Enquiries' },
-    { id: 'update', label: 'Updates' },
-  ];
+  const tabs: { id: NotifTab; label: string }[] = useMemo(() => [
+    { id: 'all', label: t('All') },
+    { id: 'offer', label: t('Deals') },
+    { id: 'enquiry', label: t('My Enquiries') },
+    { id: 'update', label: t('Notifications') },
+  ], [t]);
 
   const filteredNotifs = notifications.filter((n) => {
     if (activeTab === 'all') return true;
@@ -61,18 +55,18 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
             <button
               type="button"
               onClick={onBack}
-              aria-label="Back"
-              className="w-10 h-10 rounded-full flex items-center justify-center text-[#172033] hover:bg-slate-100 active:scale-95 transition-all"
+              aria-label={t('Back')}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-[#172033] hover:bg-slate-100 active:scale-95 transition-all cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
             </button>
 
             <div>
               <h1 className="font-brand font-extrabold text-xl text-[#172033]">
-                Notifications
+                {t('Notifications')}
               </h1>
               <p className="text-xs text-[#667085]">
-                Updates, offers & responses
+                {t('Offers, status updates & news')}
               </p>
             </div>
           </div>
@@ -80,10 +74,10 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
           <button
             type="button"
             onClick={onMarkAllAsRead}
-            className="text-xs font-bold text-[#0757D9] flex items-center gap-1 hover:text-[#008CFF] transition-colors"
+            className="text-xs font-bold text-[#0757D9] flex items-center gap-1 hover:text-[#008CFF] transition-colors cursor-pointer"
           >
             <CheckCheck className="w-4 h-4" />
-            <span>Mark all read</span>
+            <span>{t('Mark all as read')}</span>
           </button>
         </div>
 
@@ -96,7 +90,7 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                   isActive
                     ? 'bg-[#0757D9] text-white shadow-xs'
                     : 'bg-[#F5F8FC] text-[#667085] hover:bg-slate-100'
@@ -119,24 +113,22 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
               tabIndex={0}
               onClick={() => onNotificationClick(item)}
               onKeyDown={(e) => e.key === 'Enter' && onNotificationClick(item)}
-              className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 relative ${
-                !item.isRead
-                  ? 'bg-white border-[#008CFF]/30 shadow-xs'
-                  : 'bg-white/80 border-[#E2E8F0]'
+              className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 ${
+                item.isRead
+                  ? 'bg-white border-[#E2E8F0] shadow-xs'
+                  : 'bg-white border-[#0757D9]/30 shadow-sm ring-1 ring-[#0757D9]/10'
               }`}
             >
-              {/* Type Icon */}
-              <div className="w-10 h-10 rounded-xl bg-[#E8F5FF] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#F5F8FC] flex items-center justify-center shrink-0 mt-0.5">
                 {getIcon(item.type)}
               </div>
 
-              {/* Text content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <h3 className={`text-xs truncate ${!item.isRead ? 'font-bold text-[#071B52]' : 'font-semibold text-[#172033]'}`}>
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="font-bold text-sm text-[#172033] truncate">
                     {item.title}
-                  </h3>
-                  <span className="text-[10px] text-[#667085] shrink-0 font-medium">
+                  </h4>
+                  <span className="text-[10px] text-slate-400 shrink-0">
                     {item.time}
                   </span>
                 </div>
@@ -155,8 +147,8 @@ export const NotificationsScreen: React.FC<NotificationsScreenProps> = ({
         ) : (
           <EmptyState
             icon={Bell}
-            title="No notifications yet"
-            description="You are all caught up! New offers and responses will appear here."
+            title={t('No Notifications')}
+            description={t('You are all caught up!')}
             className="my-12 bg-white rounded-3xl border border-[#E2E8F0] shadow-xs"
           />
         )}

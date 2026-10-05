@@ -4,6 +4,8 @@ import { Business } from '../types';
 import { SEARCH_SUGGESTIONS } from '../data/mockBusinesses';
 import { SearchBar } from '../components/common/SearchBar';
 import { BusinessCard } from '../components/common/BusinessCard';
+import { filterBusinesses } from '../utils/searchMatcher';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SearchResultsScreenProps {
   initialQuery?: string;
@@ -23,6 +25,7 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   onSelectBusiness,
 }) => {
   const [query, setQuery] = useState(initialQuery);
+  const { t, language } = useLanguage();
   const [recentSearches, setRecentSearches] = useState<string[]>([
     'Mobile Shops',
     'Noor Electronics',
@@ -40,19 +43,7 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   };
 
   const searchResults = useMemo(() => {
-    if (!query.trim()) {
-      return businesses;
-    }
-    const q = query.toLowerCase();
-    return businesses.filter(
-      (b) =>
-        b.name.toLowerCase().includes(q) ||
-        b.categoryName.toLowerCase().includes(q) ||
-        b.locality.toLowerCase().includes(q) ||
-        b.tagline.toLowerCase().includes(q) ||
-        b.description.toLowerCase().includes(q) ||
-        b.services.some((s) => s.name.toLowerCase().includes(q))
-    );
+    return filterBusinesses(businesses, query);
   }, [businesses, query]);
 
   return (
@@ -88,14 +79,14 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-1.5 text-xs font-bold text-[#667085] uppercase tracking-wider">
                 <Clock className="w-3.5 h-3.5 text-[#0757D9]" />
-                <span>Recent Searches</span>
+                <span>{t('Recent Searches')}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setRecentSearches([])}
-                className="text-xs font-semibold text-[#0757D9]"
+                className="text-xs font-semibold text-[#0757D9] cursor-pointer"
               >
-                Clear All
+                {t('Clear All')}
               </button>
             </div>
 
@@ -128,7 +119,7 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
           <section className="bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-xs">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#667085] uppercase tracking-wider mb-2.5">
               <TrendingUp className="w-3.5 h-3.5 text-[#008CFF]" />
-              <span>Popular Searches</span>
+              <span>{t('Popular Searches')}</span>
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -137,9 +128,9 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
                   key={tag}
                   type="button"
                   onClick={() => handleSelectTag(tag)}
-                  className="bg-[#F5F8FC] hover:bg-[#E8F5FF] text-[#0757D9] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                  className="bg-[#F5F8FC] hover:bg-[#E8F5FF] text-[#0757D9] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer"
                 >
-                  {tag}
+                  {t(tag)}
                 </button>
               ))}
             </div>
@@ -151,10 +142,10 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
           <span>
             {query ? (
               <>
-                <strong className="text-[#172033]">{searchResults.length}</strong> businesses found for &quot;{query}&quot;
+                <strong className="text-[#172033]">{searchResults.length}</strong> {t('businesses')} ({query})
               </>
             ) : (
-              <span>Recommended businesses</span>
+              <span>{t('Recommended')}</span>
             )}
           </span>
           <span className="font-semibold text-[#0757D9]">Chennai</span>
@@ -177,10 +168,10 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
             <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6">
               <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
               <p className="font-bold text-base text-[#172033]">
-                No businesses found for &quot;{query}&quot;
+                {t('No businesses found')}
               </p>
               <p className="text-xs text-[#667085] mt-1">
-                Try searching with another keyword like &quot;Mobile&quot;, &quot;Salon&quot; or &quot;Dining&quot;.
+                {t('Try another business name, category or service.')}
               </p>
             </div>
           )}

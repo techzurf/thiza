@@ -46,7 +46,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
           <button
             type="button"
             onClick={() => {
-              onSelectCity('Chennai, Tamil Nadu');
+              onSelectCity('Tiruppur, Tamil Nadu');
               onClose();
             }}
             className="w-full flex items-center justify-between p-3 rounded-2xl bg-white border border-[#008CFF]/30 text-left shadow-xs active:scale-[0.99] transition-transform"
@@ -60,7 +60,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({
                   Use Current GPS Location
                 </p>
                 <p className="text-[11px] text-[#667085]">
-                  Chennai, Tamil Nadu
+                  Tiruppur, Tamil Nadu
                 </p>
               </div>
             </div>

@@ -32,7 +32,6 @@ export const FindScreen: React.FC<FindScreenProps> = ({
 }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'featured' | 'trending' | 'topRated'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -73,10 +72,6 @@ export const FindScreen: React.FC<FindScreenProps> = ({
         b.tagline.toLowerCase().includes(q);
       if (!match) return false;
     }
-
-    if (filter === 'featured') return b.isFeatured;
-    if (filter === 'trending') return b.reviewCount > 100;
-    if (filter === 'topRated') return b.rating >= 4.7;
     return true;
   });
 
@@ -175,29 +170,6 @@ export const FindScreen: React.FC<FindScreenProps> = ({
             </p>
           </div>
         </section>
-
-        {/* Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {[
-            { id: 'all', label: 'All Highlights' },
-            { id: 'featured', label: 'Featured Only' },
-            { id: 'trending', label: 'Trending & Popular' },
-            { id: 'topRated', label: 'Top Rated (4.7+ ★)' },
-          ].map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setFilter(item.id as any)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                filter === item.id
-                  ? 'bg-[#0757D9] text-white shadow-xs'
-                  : 'bg-white text-[#667085] hover:bg-slate-50 border border-[#E2E8F0]'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
 
         {/* Business Results */}
         <section className="space-y-3">

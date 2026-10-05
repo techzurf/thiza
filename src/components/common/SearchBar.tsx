@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Mic, SlidersHorizontal, X } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SearchBarProps {
   value: string;
@@ -19,11 +20,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   onFilterClick,
   onVoiceClick,
-  placeholder = 'Search businesses, services...',
+  placeholder,
   autoFocus = false,
   isReadOnly = false,
   onFocus,
 }) => {
+  const { t } = useLanguage();
+  const defaultPlaceholder = t('Search businesses, services...');
+  const displayPlaceholder = placeholder ? t(placeholder) : defaultPlaceholder;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onSearch) onSearch();
@@ -40,7 +45,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           readOnly={isReadOnly}
           onFocus={onFocus}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
+          placeholder={displayPlaceholder}
           autoFocus={autoFocus}
           className="w-full bg-transparent px-3 text-sm font-medium text-[#172033] placeholder-[#667085] outline-none"
         />

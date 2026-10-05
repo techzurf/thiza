@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, CheckCircle2, Send, Calendar, Clock, User, Phone, Mail, MessageSquare } from 'lucide-react';
-import { Business, EnquiryData } from '../types';
+import { Business } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EnquiryScreenProps {
   business: Business;
@@ -13,11 +14,12 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
   onBack,
   onDone,
 }) => {
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
-    name: 'Karthik Raja',
+    name: 'Guest',
     phone: '+91 98401 98765',
-    email: 'karthik.raja@example.com',
-    message: 'Hello, I am interested in your pricing and availability for this weekend.',
+    email: 'guest@example.com',
+    message: language === 'Tamil' ? 'வணக்கம், உங்கள் வணிகம் குறித்த கூடுதல் விவரங்கள் தேவை.' : 'Hello, I am interested in your services and availability.',
     preferredDate: '2026-10-02',
     preferredTime: '11:00 AM',
   });
@@ -49,20 +51,20 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           </div>
 
           <h2 className="font-brand font-extrabold text-2xl text-[#172033]">
-            Enquiry Sent Successfully
+            {t('Enquiry Sent Successfully!')}
           </h2>
 
           <p className="text-sm text-[#667085] mt-2 leading-relaxed">
-            Your enquiry has been delivered directly to <strong className="text-[#172033]">{business.name}</strong>. Their team will contact you shortly via phone or WhatsApp.
+            {t('The business owner will contact you shortly.')}
           </p>
 
           <div className="bg-[#F5F8FC] border border-[#E2E8F0] p-4 rounded-2xl w-full mt-6 text-left">
             <div className="text-xs text-[#667085] flex items-center justify-between pb-2 border-b border-slate-200">
-              <span>Recipient:</span>
+              <span>{language === 'Tamil' ? 'பெறுநர்:' : 'Recipient:'}</span>
               <strong className="text-[#172033]">{business.name}</strong>
             </div>
             <div className="text-xs text-[#667085] flex items-center justify-between pt-2">
-              <span>Preferred Date & Time:</span>
+              <span>{language === 'Tamil' ? 'விருப்ப நேரம்:' : 'Preferred Date & Time:'}</span>
               <span className="text-[#0757D9] font-bold">
                 {formData.preferredDate} at {formData.preferredTime}
               </span>
@@ -74,9 +76,9 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <button
             type="button"
             onClick={onDone}
-            className="w-full h-13 rounded-2xl bg-tizara-gradient text-white font-brand font-bold text-base shadow-lg shadow-[#0757D9]/25 active:scale-[0.98] transition-transform"
+            className="w-full h-13 rounded-2xl bg-tizara-gradient text-white font-brand font-bold text-base shadow-lg shadow-[#0757D9]/25 active:scale-[0.98] transition-transform cursor-pointer"
           >
-            Done
+            {t('Done')}
           </button>
         </div>
       </div>
@@ -91,18 +93,18 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <button
             type="button"
             onClick={onBack}
-            aria-label="Back"
-            className="w-10 h-10 rounded-full flex items-center justify-center text-[#172033] hover:bg-slate-100 active:scale-95 transition-all"
+            aria-label={t('Back')}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-[#172033] hover:bg-slate-100 active:scale-95 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
           </button>
 
           <div>
             <h1 className="font-brand font-extrabold text-xl text-[#172033]">
-              Send an Enquiry
+              {t('Send Enquiry')}
             </h1>
             <p className="text-xs text-[#667085]">
-              To {business.name}
+              {business.name}
             </p>
           </div>
         </div>
@@ -130,7 +132,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <div>
             <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
               <User className="w-3.5 h-3.5 text-[#0757D9]" />
-              <span>Your Name *</span>
+              <span>{t('Your Name')} *</span>
             </label>
             <input
               type="text"
@@ -145,7 +147,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <div>
             <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5 text-[#0757D9]" />
-              <span>Phone Number *</span>
+              <span>{t('Phone Number')} *</span>
             </label>
             <input
               type="tel"
@@ -160,7 +162,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <div>
             <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
               <Mail className="w-3.5 h-3.5 text-[#0757D9]" />
-              <span>Email Address</span>
+              <span>{t('Email')}</span>
             </label>
             <input
               type="email"
@@ -174,7 +176,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
           <div>
             <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
               <MessageSquare className="w-3.5 h-3.5 text-[#0757D9]" />
-              <span>Enquiry Message *</span>
+              <span>{t('Your Message / Requirement')} *</span>
             </label>
             <textarea
               rows={3}
@@ -190,7 +192,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
             <div>
               <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#0757D9]" />
-                <span>Preferred Date</span>
+                <span>{language === 'Tamil' ? 'தேதி' : 'Preferred Date'}</span>
               </label>
               <input
                 type="date"
@@ -203,7 +205,7 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
             <div>
               <label className="block text-xs font-bold text-[#172033] mb-1.5 flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#0757D9]" />
-                <span>Preferred Time</span>
+                <span>{language === 'Tamil' ? 'நேரம்' : 'Preferred Time'}</span>
               </label>
               <select
                 value={formData.preferredTime}
@@ -225,11 +227,11 @@ export const EnquiryScreen: React.FC<EnquiryScreenProps> = ({
             className="w-full h-13 rounded-2xl bg-tizara-gradient text-white font-brand font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-[#0757D9]/25 hover:opacity-95 active:scale-[0.98] transition-all mt-2 cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
-              <span>Sending Enquiry...</span>
+              <span>{t('Sending...')}</span>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Send Enquiry</span>
+                <span>{t('Send Enquiry')}</span>
               </>
             )}
           </button>

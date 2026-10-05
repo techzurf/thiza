@@ -32,12 +32,12 @@ export const MyBusinessScreen: React.FC<MyBusinessScreenProps> = ({
 
   const displayBusiness = business || {
     id: 'b1',
-    name: 'Blue Horizon Realty & Homes',
-    categoryName: 'Real Estate & Properties',
-    locality: 'Perungudi, Chennai',
-    rating: 4.6,
-    reviewCount: 98,
-    logo: 'BH',
+    name: 'Kids Academy – After School Education',
+    categoryName: 'Education',
+    locality: 'Sheriff Colony, Tiruppur',
+    rating: 4.8,
+    reviewCount: 53,
+    logo: 'KA',
   };
 
   const stats = [

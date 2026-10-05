@@ -37,8 +37,24 @@ import { ListBusinessScreen } from './screens/ListBusinessScreen';
 import { MyBusinessScreen } from './screens/MyBusinessScreen';
 import { NotificationsScreen } from './screens/NotificationsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { BusinessPlansScreen } from './screens/BusinessPlansScreen';
+import { AcServiceDetailScreen } from './screens/AcServiceDetailScreen';
+import { PestControlDetailScreen } from './screens/PestControlDetailScreen';
+import { ElectricianDetailScreen } from './screens/ElectricianDetailScreen';
+import { CleaningServicesDetailScreen } from './screens/CleaningServicesDetailScreen';
+import { PackersMoversDetailScreen } from './screens/PackersMoversDetailScreen';
+import { PlumbingServicesDetailScreen } from './screens/PlumbingServicesDetailScreen';
+import { LanguageProvider } from './context/LanguageContext';
 
 export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+}
+
+function AppContent() {
   // Navigation State
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('home');
   const [currentTab, setCurrentTab] = useState<BottomTabId>('home');
@@ -47,9 +63,29 @@ export default function App() {
 
   // Data State
   const [businesses, setBusinesses] = useState<Business[]>(BUSINESSES);
-  const [favorites, setFavorites] = useState<string[]>(['b1', 'b2', 'b6']);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('tizara_favorites');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // fallback
+    }
+    return ['b1', 'b2', 'b6'];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('tizara_favorites', JSON.stringify(favorites));
+    } catch {
+      // ignore
+    }
+  }, [favorites]);
+
   const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
-  const [currentLocation, setCurrentLocation] = useState<string>('Chennai, Tamil Nadu');
+  const [currentLocation, setCurrentLocation] = useState<string>('Tiruppur, Tamil Nadu');
 
   // Selected Entities
   const [selectedBusiness, setSelectedBusiness] = useState<Business>(BUSINESSES[0]);
@@ -57,6 +93,7 @@ export default function App() {
   const [selectedOfferModal, setSelectedOfferModal] = useState<BusinessOffer | null>(null);
   const [shareBusiness, setShareBusiness] = useState<Business | null>(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [searchInitialQuery, setSearchInitialQuery] = useState<string>('');
 
   // Navigate to screen with history tracking
   const navigateTo = (screen: ScreenId) => {
@@ -153,7 +190,13 @@ export default function App() {
     currentScreen === 'explore' ||
     currentScreen === 'favorites' ||
     currentScreen === 'offers' ||
-    currentScreen === 'profile';
+    currentScreen === 'profile' ||
+    currentScreen === 'ac-service-detail' ||
+    currentScreen === 'pest-control-detail' ||
+    currentScreen === 'electrician-detail' ||
+    currentScreen === 'cleaning-services-detail' ||
+    currentScreen === 'packers-movers-detail' ||
+    currentScreen === 'plumbing-services-detail';
 
   return (
     <div className="w-full min-h-[100dvh] bg-[#F5F8FC] text-[#172033] relative flex flex-col">
@@ -204,7 +247,14 @@ export default function App() {
             setCurrentTab('profile');
             setCurrentScreen('profile');
           }}
-          onSearchFocus={() => navigateTo('search-results')}
+          onSearchFocus={() => {
+            setSearchInitialQuery('');
+            navigateTo('search-results');
+          }}
+          onSearchSubmit={(query: string) => {
+            setSearchInitialQuery(query);
+            navigateTo('search-results');
+          }}
           onSelectCategory={handleSelectCategory}
           onSelectBusiness={handleSelectBusiness}
           onSelectOffer={(offer) => {
@@ -222,6 +272,25 @@ export default function App() {
           onFindVideoClick={() => {
             navigateTo('find');
           }}
+          onSelectAcService={() => {
+            navigateTo('ac-service-detail');
+          }}
+          onSelectPestControl={() => {
+            navigateTo('pest-control-detail');
+          }}
+          onSelectElectrician={() => {
+            navigateTo('electrician-detail');
+          }}
+          onSelectCleaningService={() => {
+            navigateTo('cleaning-services-detail');
+          }}
+          onSelectPackersMovers={() => {
+            navigateTo('packers-movers-detail');
+          }}
+          onSelectPlumbingService={() => {
+            navigateTo('plumbing-services-detail');
+          }}
+          onListBusiness={() => navigateTo('list-business')}
           businesses={businesses}
           favorites={favorites}
           onToggleFavorite={handleToggleFavorite}
@@ -270,12 +339,17 @@ export default function App() {
           onBack={handleBack}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
+          onBrowseAll={() => {
+            setCurrentTab('explore');
+            setCurrentScreen('explore');
+          }}
         />
       )}
 
       {/* SCREEN 6: SEARCH RESULTS */}
       {currentScreen === 'search-results' && (
         <SearchResultsScreen
+          initialQuery={searchInitialQuery}
           businesses={businesses}
           favorites={favorites}
           onBack={handleBack}
@@ -376,6 +450,78 @@ export default function App() {
         />
       )}
 
+      {/* SCREEN: AC SERVICE DETAIL */}
+      {currentScreen === 'ac-service-detail' && (
+        <AcServiceDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const acBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(acBiz);
+          }}
+        />
+      )}
+
+      {/* SCREEN: PEST CONTROL DETAIL */}
+      {currentScreen === 'pest-control-detail' && (
+        <PestControlDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const pestBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(pestBiz);
+          }}
+        />
+      )}
+
+      {/* SCREEN: ELECTRICIAN DETAIL */}
+      {currentScreen === 'electrician-detail' && (
+        <ElectricianDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const elecBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(elecBiz);
+          }}
+        />
+      )}
+
+      {/* SCREEN: CLEANING SERVICES DETAIL */}
+      {currentScreen === 'cleaning-services-detail' && (
+        <CleaningServicesDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const cleanBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(cleanBiz);
+          }}
+        />
+      )}
+
+      {/* SCREEN: PACKERS & MOVERS DETAIL */}
+      {currentScreen === 'packers-movers-detail' && (
+        <PackersMoversDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const moveBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(moveBiz);
+          }}
+        />
+      )}
+
+      {/* SCREEN: PLUMBING SERVICES DETAIL */}
+      {currentScreen === 'plumbing-services-detail' && (
+        <PlumbingServicesDetailScreen
+          onBack={handleBack}
+          onEnquire={() => {
+            const plumbBiz =
+              businesses.find((b) => b.category === 'services') || businesses[0];
+            handleEnquire(plumbBiz);
+          }}
+        />
+      )}
+
       {/* SCREEN 15: PROFILE */}
       {currentScreen === 'profile' && (
         <ProfileScreen
@@ -385,6 +531,7 @@ export default function App() {
             setCurrentScreen('favorites');
           }}
           onNavigateMyBusiness={() => navigateTo('my-business')}
+          onNavigatePricingPlans={() => navigateTo('pricing-plans')}
           onNavigateNotifications={() => navigateTo('notifications')}
           onOpenLocationModal={() => setIsLocationModalOpen(true)}
           onResetIntro={() => {
@@ -392,6 +539,13 @@ export default function App() {
             setCurrentScreen('home');
             setCurrentTab('home');
           }}
+        />
+      )}
+
+      {/* SCREEN: BUSINESS PRICING & LISTING PLANS */}
+      {currentScreen === 'pricing-plans' && (
+        <BusinessPlansScreen
+          onBack={handleBack}
         />
       )}
 

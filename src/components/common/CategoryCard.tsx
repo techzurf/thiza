@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Category } from '../../types';
 import { CategoryIcon } from './CategoryIcon';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface CategoryCardProps {
   category: Category;
@@ -22,6 +23,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   fontIconClass,
 }) => {
   const isSmall = size === 'sm';
+  const { tCategory } = useLanguage();
   const videoRef = useRef<HTMLVideoElement>(null);
   const activeFontIcon = fontIconClass || category.fontIconClass;
 
@@ -50,7 +52,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             : 'group-hover:shadow-sm'
         }`}
         style={{
-          backgroundColor: isSelected ? '#0757D9' : category.bgColor,
+          backgroundColor: isSelected ? '#0757D9' : imageUrl ? 'transparent' : category.bgColor,
         }}
       >
         {videoUrl ? (
@@ -70,8 +72,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           <img
             src={imageUrl}
             alt={category.name}
-            className="w-full h-full object-contain p-2 block pointer-events-none"
-            style={{ objectFit: 'contain' }}
+            className="w-full h-full object-cover block pointer-events-none rounded-2xl"
+            style={{ objectFit: 'cover' }}
             loading="eager"
           />
         ) : activeFontIcon ? (
@@ -103,7 +105,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           isSmall ? 'text-[11px]' : 'text-xs'
         } ${isSelected ? 'text-[#0757D9]' : 'text-[#172033]'}`}
       >
-        {category.name}
+        {tCategory(category.id || category.name)}
       </span>
     </button>
   );

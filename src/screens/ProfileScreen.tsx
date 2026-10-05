@@ -17,14 +17,18 @@ import {
   Sparkles,
   Check,
   X,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import { TizaraLogo } from '../components/common/TizaraLogo';
 import { INITIAL_ENQUIRIES } from '../data/mockBusinesses';
+import { useLanguage, Language } from '../context/LanguageContext';
 
 interface ProfileScreenProps {
   currentLocation: string;
   onNavigateFavorites: () => void;
   onNavigateMyBusiness: () => void;
+  onNavigatePricingPlans: () => void;
   onNavigateNotifications: () => void;
   onOpenLocationModal: () => void;
   onResetIntro: () => void;
@@ -34,32 +38,33 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   currentLocation,
   onNavigateFavorites,
   onNavigateMyBusiness,
+  onNavigatePricingPlans,
   onNavigateNotifications,
   onOpenLocationModal,
   onResetIntro,
 }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<'English' | 'Tamil'>('English');
+  const { language, setLanguage, t } = useLanguage();
 
   const menuSections = [
     {
-      title: 'Activity & Management',
+      title: t('Activity & Management'),
       items: [
-        { id: 'business', label: 'My Business Dashboard', icon: Building2, desc: 'Manage your listing & enquiries', action: onNavigateMyBusiness, highlight: true },
-        { id: 'favorites', label: 'My Favorites', icon: Bookmark, desc: 'Saved places & services', action: onNavigateFavorites },
-        { id: 'enquiries', label: 'My Enquiries', icon: MessageSquare, desc: 'Recent quotes & booking requests', action: () => setActiveModal('enquiries') },
-        { id: 'recent', label: 'Recently Viewed', icon: Clock, desc: 'Places you visited recently', action: () => setActiveModal('recent') },
-        { id: 'reviews', label: 'My Reviews', icon: Star, desc: 'Feedback you left for businesses', action: () => setActiveModal('reviews') },
+        { id: 'business', label: t('My Business Dashboard'), icon: Building2, desc: t('Manage your listing & enquiries'), action: onNavigateMyBusiness, highlight: true },
+        { id: 'favorites', label: t('My Favorites'), icon: Bookmark, desc: t('Saved places & services'), action: onNavigateFavorites },
+        { id: 'enquiries', label: t('My Enquiries'), icon: MessageSquare, desc: t('Recent quotes & booking requests'), action: () => setActiveModal('enquiries') },
+        { id: 'recent', label: t('Recently Viewed'), icon: Clock, desc: t('Places you visited recently'), action: () => setActiveModal('recent') },
+        { id: 'reviews', label: t('My Reviews'), icon: Star, desc: t('Feedback you left for businesses'), action: () => setActiveModal('reviews') },
       ],
     },
     {
-      title: 'Preferences & Support',
+      title: t('Preferences & Support'),
       items: [
-        { id: 'notifications', label: 'Notifications', icon: Bell, desc: 'Manage alerts & deal updates', action: onNavigateNotifications },
-        { id: 'language', label: 'Language', icon: Globe, desc: selectedLanguage, action: () => setActiveModal('language') },
-        { id: 'privacy', label: 'Privacy & Security', icon: Shield, desc: 'Your account & data control', action: () => setActiveModal('privacy') },
-        { id: 'help', label: 'Help & Support', icon: HelpCircle, desc: 'FAQs & 24/7 customer care', action: () => setActiveModal('help') },
-        { id: 'about', label: 'About Tizara', icon: Info, desc: 'Version 2.4 · Discover • Connect • Grow', action: () => setActiveModal('about') },
+        { id: 'notifications', label: t('Notifications & Alerts'), icon: Bell, desc: t('Offers, status updates & news'), action: onNavigateNotifications },
+        { id: 'language', label: t('Language'), icon: Globe, desc: language === 'Tamil' ? 'தமிழ் (Tamil)' : 'English', action: () => setActiveModal('language') },
+        { id: 'privacy', label: t('Privacy & Terms'), icon: Shield, desc: t('User security & platform terms'), action: () => setActiveModal('privacy') },
+        { id: 'help', label: t('Help & Support'), icon: HelpCircle, desc: t('FAQs & 24/7 customer care'), action: () => setActiveModal('help') },
+        { id: 'about', label: t('About Tizara'), icon: Info, desc: `Version 2.4 · ${t('Discover • Connect • Grow', 'Discover • Connect • Grow')}`, action: () => setActiveModal('about') },
       ],
     },
   ];
@@ -69,10 +74,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
       {/* Top Profile Header */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] pt-safe px-4 pb-3 shadow-[0_2px_12px_rgba(7,27,82,0.03)]">
         <h1 className="font-brand font-extrabold text-2xl text-[#172033] tracking-tight">
-          Profile
+          {t('Profile')}
         </h1>
         <p className="text-xs text-[#667085]">
-          Account settings & network tools
+          {t('Preferences & Support')}
         </p>
       </header>
 
@@ -85,7 +90,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <div className="w-16 h-16 rounded-full bg-tizara-gradient p-1 flex items-center justify-center shadow-md">
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                 <span className="font-brand font-extrabold text-xl text-[#0757D9]">
-                  KR
+                  G
                 </span>
               </div>
             </div>
@@ -93,13 +98,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="font-brand font-extrabold text-lg text-[#172033]">
-                  Karthik Raja
+                  Guest
                 </h2>
                 <span className="bg-[#EBF3FF] text-[#0757D9] text-[10px] font-bold px-2 py-0.5 rounded-full">
-                  Member
+                  Guest
                 </span>
               </div>
-              <p className="text-xs text-[#667085]">karthik.raja@example.com</p>
+              <p className="text-xs text-[#667085]">guest@tizara.app</p>
 
               <button
                 type="button"
@@ -125,8 +130,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         <div
           role="button"
           tabIndex={0}
-          onClick={onNavigateMyBusiness}
-          onKeyDown={(e) => e.key === 'Enter' && onNavigateMyBusiness()}
+          onClick={onNavigatePricingPlans}
+          onKeyDown={(e) => e.key === 'Enter' && onNavigatePricingPlans()}
           className="bg-tizara-gradient text-white p-4 rounded-3xl shadow-md cursor-pointer flex items-center justify-between active:scale-[0.99] transition-transform"
         >
           <div className="flex items-center gap-3">
@@ -138,7 +143,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 Merchant & Business Hub
               </h3>
               <p className="text-xs text-white/80">
-                Manage your shop, leads & statistics
+                Choose your business plan & reach local customers
               </p>
             </div>
           </div>
@@ -215,10 +220,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 onResetIntro();
               }
             }}
-            className="w-full py-3 rounded-2xl bg-white border border-rose-200 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-3 rounded-2xl bg-white border border-rose-200 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <span>{t('Logout')}</span>
           </button>
         </div>
 
@@ -226,7 +231,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         <div className="text-center py-4">
           <TizaraLogo variant="horizontal" size="sm" showTagline className="justify-center" />
           <p className="text-[10px] text-[#667085] mt-2">
-            Tizara Business Discovery Mobile v2.4.0 (WebView Ready)
+            Tizara Business Discovery Mobile v2.4.0
           </p>
         </div>
       </main>
@@ -241,19 +246,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="font-bold text-base text-[#172033]">
-                {activeModal === 'about' && 'About Tizara'}
-                {activeModal === 'help' && 'Help & Support'}
-                {activeModal === 'privacy' && 'Privacy & Terms'}
-                {activeModal === 'language' && 'Select Language'}
-                {activeModal === 'enquiries' && 'My Sent Enquiries'}
-                {activeModal === 'recent' && 'Recently Viewed Places'}
-                {activeModal === 'reviews' && 'My Reviews'}
-                {activeModal === 'editProfile' && 'Edit Profile'}
+                {activeModal === 'about' && t('About Tizara')}
+                {activeModal === 'help' && t('Help & Support')}
+                {activeModal === 'privacy' && t('Privacy & Terms')}
+                {activeModal === 'language' && t('Select Language')}
+                {activeModal === 'enquiries' && t('My Enquiries')}
+                {activeModal === 'recent' && t('Recently Viewed Places')}
+                {activeModal === 'reviews' && t('My Reviews')}
+                {activeModal === 'editProfile' && t('Edit Profile')}
               </h3>
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700"
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -266,8 +271,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                   <p>
                     Tizara is a next-generation business discovery and networking platform designed for modern mobile users. Our mission is to connect communities with verified local businesses, authentic customer reviews, and exclusive digital promotions.
                   </p>
-                  <p className="font-semibold text-[#071B52]">
-                    Built for Android WebView, iOS & Progressive Web standards.
+                  <p className="font-semibold text-[#0757D9]">
+                    Discover • Connect • Grow
                   </p>
                 </div>
               )}
@@ -279,24 +284,79 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                       key={lang}
                       type="button"
                       onClick={() => {
-                        setSelectedLanguage(lang);
+                        setLanguage(lang);
                         setActiveModal(null);
                       }}
-                      className="w-full flex items-center justify-between p-3 rounded-xl bg-[#F5F8FC] hover:bg-[#EBF3FF] text-[#172033] font-semibold text-xs transition-colors"
+                      className="w-full flex items-center justify-between p-3 rounded-xl bg-[#F5F8FC] hover:bg-[#EBF3FF] text-[#172033] font-semibold text-xs transition-colors cursor-pointer"
                     >
-                      <span>{lang}</span>
-                      {selectedLanguage === lang && <Check className="w-4 h-4 text-[#0757D9]" />}
+                      <span className="font-bold">{lang === 'Tamil' ? 'தமிழ் (Tamil)' : 'English'}</span>
+                      {language === lang && <Check className="w-4 h-4 text-[#0757D9]" />}
                     </button>
                   ))}
                 </div>
               )}
 
               {activeModal === 'help' && (
-                <div className="flex flex-col gap-2.5">
-                  <p className="font-bold text-[#172033]">Need assistance with Tizara?</p>
-                  <p>Call our support helpline: +91 44 2828 0000</p>
-                  <p>Email: support@tizara.app</p>
-                  <p>Hours: Monday to Saturday, 9:00 AM – 7:00 PM</p>
+                <div className="flex flex-col gap-3.5">
+                  {/* Tiruppur Office Card */}
+                  <div className="p-3.5 bg-[#F5F8FC] rounded-2xl border border-slate-200 flex flex-col gap-2">
+                    <div className="flex items-center gap-1.5 text-[#0757D9]">
+                      <MapPin className="w-4 h-4 shrink-0 stroke-[2.2]" />
+                      <span className="font-bold text-xs uppercase tracking-wider text-[#071B52]">
+                        {t('Tiruppur Office')}
+                      </span>
+                    </div>
+
+                    <div className="text-xs text-[#172033] font-bold">
+                      AsinMart Private Limited
+                    </div>
+
+                    <div className="text-[11px] text-[#475467] leading-relaxed font-normal">
+                      <p>SF NO-186/2, N.M ROAD, NO 35/1, RVE NAGAR,</p>
+                      <p>4TH STREET, (NORTH), RAKKIYAPALAYAM PRIVU,</p>
+                      <p>KANGEYAM MAIN ROAD,</p>
+                      <p className="font-semibold text-[#172033]">TIRUPPUR - 641604</p>
+                    </div>
+                  </div>
+
+                  {/* Phone & Email Contact Cards */}
+                  <div className="flex flex-col gap-2">
+                    {/* Phone */}
+                    <a
+                      href="tel:9443425951"
+                      className="p-3 bg-[#F5F8FC] hover:bg-[#EBF3FF] rounded-2xl border border-slate-200 flex items-center gap-3 transition-colors group cursor-pointer"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-[#0757D9] shadow-2xs group-hover:bg-[#0757D9] group-hover:text-white transition-colors shrink-0">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">
+                          {t('Phone')}
+                        </span>
+                        <span className="text-xs font-bold text-[#172033] group-hover:text-[#0757D9] transition-colors">
+                          9443425951
+                        </span>
+                      </div>
+                    </a>
+
+                    {/* Email */}
+                    <a
+                      href="mailto:support@asinmart.com"
+                      className="p-3 bg-[#F5F8FC] hover:bg-[#EBF3FF] rounded-2xl border border-slate-200 flex items-center gap-3 transition-colors group cursor-pointer"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-[#0757D9] shadow-2xs group-hover:bg-[#0757D9] group-hover:text-white transition-colors shrink-0">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">
+                          {t('Email')}
+                        </span>
+                        <span className="text-xs font-bold text-[#172033] truncate group-hover:text-[#0757D9] transition-colors">
+                          support@asinmart.com
+                        </span>
+                      </div>
+                    </a>
+                  </div>
                 </div>
               )}
 
@@ -320,16 +380,16 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               {activeModal === 'recent' && (
                 <div className="flex flex-col gap-2">
                   <div className="p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200">
-                    <p className="font-bold text-[#172033]">1. Blue Horizon Realty & Homes</p>
-                    <p className="text-[11px] text-[#667085]">Real Estate & Properties · Perungudi</p>
+                    <p className="font-bold text-[#172033]">1. Kids Academy – After School Education</p>
+                    <p className="text-[11px] text-[#667085]">Education · Sheriff Colony, Tiruppur</p>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200">
-                    <p className="font-bold text-[#172033]">2. Spice Symphony Bistro</p>
-                    <p className="text-[11px] text-[#667085]">Restaurants & Dining · Nungambakkam</p>
+                    <p className="font-bold text-[#172033]">2. Fashion Designing Institute – Tiruppur</p>
+                    <p className="text-[11px] text-[#667085]">Education · Avinashi Road, Tiruppur</p>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200">
-                    <p className="font-bold text-[#172033]">3. Apex Care Dental Clinic</p>
-                    <p className="text-[11px] text-[#667085]">Doctors & Clinics · Chetpet</p>
+                    <p className="font-bold text-[#172033]">3. Golden Ayurvedic Centre</p>
+                    <p className="text-[11px] text-[#667085]">Doctors & Clinics · PN Road, Tiruppur</p>
                   </div>
                 </div>
               )}
@@ -337,8 +397,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               {activeModal === 'reviews' && (
                 <div className="flex flex-col gap-2">
                   <div className="p-3 bg-[#F5F8FC] rounded-xl border border-slate-200">
-                    <p className="font-bold text-[#172033]">Spice Symphony Bistro</p>
-                    <p className="text-[11px] text-[#0757D9]">★ 5.0 Rating · &quot;Outstanding food quality and coastal seafood!&quot;</p>
+                    <p className="font-bold text-[#172033]">Fashion Designing Institute – Tiruppur</p>
+                    <p className="text-[11px] text-[#0757D9]">★ 5.0 Rating · &quot;Outstanding CAD pattern making and practical training!&quot;</p>
                   </div>
                 </div>
               )}
@@ -352,19 +412,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               {activeModal === 'editProfile' && (
                 <div className="flex flex-col gap-3">
                   <div>
-                    <label className="block font-bold text-[#172033] mb-1">Full Name</label>
-                    <input defaultValue="Karthik Raja" className="w-full p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200 text-xs font-semibold" />
+                    <label className="block font-bold text-[#172033] mb-1">{t('Full Name')}</label>
+                    <input defaultValue="Guest" className="w-full p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200 text-xs font-semibold" />
                   </div>
                   <div>
-                    <label className="block font-bold text-[#172033] mb-1">Email</label>
-                    <input defaultValue="karthik.raja@example.com" className="w-full p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200 text-xs font-semibold" />
+                    <label className="block font-bold text-[#172033] mb-1">{t('Email')}</label>
+                    <input defaultValue="guest@tizara.app" className="w-full p-2.5 rounded-xl bg-[#F5F8FC] border border-slate-200 text-xs font-semibold" />
                   </div>
                   <button
                     type="button"
                     onClick={() => setActiveModal(null)}
-                    className="w-full py-2.5 rounded-xl bg-[#0757D9] text-white font-bold text-xs mt-2"
+                    className="w-full py-2.5 rounded-xl bg-[#0757D9] text-white font-bold text-xs mt-2 cursor-pointer"
                   >
-                    Save Changes
+                    {t('Save Changes')}
                   </button>
                 </div>
               )}
@@ -373,9 +433,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <button
               type="button"
               onClick={() => setActiveModal(null)}
-              className="w-full py-3 rounded-xl bg-slate-100 font-bold text-xs text-[#172033]"
+              className="w-full py-3 rounded-xl bg-slate-100 font-bold text-xs text-[#172033] hover:bg-slate-200 transition-colors cursor-pointer"
             >
-              Close
+              {t('Close')}
             </button>
           </div>
         </div>

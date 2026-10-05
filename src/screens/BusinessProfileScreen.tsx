@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Business, BusinessOffer } from '../types';
 import { OfferCard } from '../components/common/OfferCard';
+import { useLanguage } from '../context/LanguageContext';
 
 interface BusinessProfileScreenProps {
   business: Business;
@@ -40,6 +41,7 @@ export const BusinessProfileScreen: React.FC<BusinessProfileScreenProps> = ({
   onSelectOffer,
 }) => {
   const [activeTab, setActiveTab] = useState<'about' | 'services' | 'offers' | 'info' | 'reviews'>('about');
+  const { t, language } = useLanguage();
 
   const handleCall = () => {
     window.location.href = `tel:${business.phone.replace(/[^0-9+]/g, '')}`;
@@ -168,19 +170,19 @@ export const BusinessProfileScreen: React.FC<BusinessProfileScreenProps> = ({
           <button
             type="button"
             onClick={handleCall}
-            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform"
+            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform cursor-pointer"
           >
             <div className="w-9 h-9 rounded-full bg-[#EBF3FF] flex items-center justify-center text-[#0757D9] mb-1">
               <Phone className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <span className="text-[11px] font-bold text-[#172033]">Call</span>
+            <span className="text-[11px] font-bold text-[#172033]">{t('Call')}</span>
           </button>
 
           {/* WhatsApp */}
           <button
             type="button"
             onClick={handleWhatsApp}
-            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform"
+            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform cursor-pointer"
           >
             <div className="w-9 h-9 rounded-full bg-[#E6FAFD] flex items-center justify-center text-[#08D9F5] mb-1">
               <MessageSquare className="w-4 h-4 stroke-[2.2]" />
@@ -192,24 +194,24 @@ export const BusinessProfileScreen: React.FC<BusinessProfileScreenProps> = ({
           <button
             type="button"
             onClick={handleDirections}
-            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform"
+            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs active:scale-95 transition-transform cursor-pointer"
           >
             <div className="w-9 h-9 rounded-full bg-[#E8F5FF] flex items-center justify-center text-[#008CFF] mb-1">
               <Navigation className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <span className="text-[11px] font-bold text-[#172033]">Directions</span>
+            <span className="text-[11px] font-bold text-[#172033]">{t('Directions')}</span>
           </button>
 
           {/* Enquire */}
           <button
             type="button"
             onClick={() => onEnquire(business)}
-            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-tizara-vibrant text-white shadow-md shadow-[#0757D9]/20 active:scale-95 transition-transform"
+            className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-tizara-vibrant text-white shadow-md shadow-[#0757D9]/20 active:scale-95 transition-transform cursor-pointer"
           >
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white mb-1">
               <Send className="w-4 h-4 stroke-[2.2]" />
             </div>
-            <span className="text-[11px] font-bold">Enquire</span>
+            <span className="text-[11px] font-bold">{t('Enquire')}</span>
           </button>
         </div>
       </div>
@@ -219,11 +221,11 @@ export const BusinessProfileScreen: React.FC<BusinessProfileScreenProps> = ({
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none border-b border-slate-200">
           {(
             [
-              { id: 'about', label: 'About' },
-              { id: 'services', label: `Services (${business.services.length})` },
-              { id: 'offers', label: `Offers (${business.offers.length})` },
-              { id: 'info', label: 'Business Info' },
-              { id: 'reviews', label: `Reviews (${business.reviews.length})` },
+              { id: 'about', label: language === 'Tamil' ? 'பற்றி' : 'About' },
+              { id: 'services', label: language === 'Tamil' ? `சேவைகள் (${business.services.length})` : `Services (${business.services.length})` },
+              { id: 'offers', label: language === 'Tamil' ? `சலுகைகள் (${business.offers.length})` : `Offers (${business.offers.length})` },
+              { id: 'info', label: language === 'Tamil' ? 'தொடர்பு விவரங்கள்' : 'Business Info' },
+              { id: 'reviews', label: language === 'Tamil' ? `மதிப்பாய்வுகள் (${business.reviews.length})` : `Reviews (${business.reviews.length})` },
             ] as const
           ).map((tab) => (
             <button
@@ -477,10 +479,9 @@ export const BusinessProfileScreen: React.FC<BusinessProfileScreenProps> = ({
         <button
           type="button"
           onClick={() => onEnquire(business)}
-          className="w-full h-12 rounded-xl bg-tizara-gradient text-white font-brand font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#0757D9]/25 active:scale-[0.98] transition-transform"
+          className="w-full h-12 rounded-xl bg-tizara-gradient text-white font-brand font-bold text-sm flex items-center justify-center shadow-lg shadow-[#0757D9]/25 active:scale-[0.98] transition-transform"
         >
-          <Send className="w-4 h-4" />
-          <span>Send Free Enquiry to {business.name}</span>
+          Send Free Enquiry
         </button>
       </div>
     </div>
