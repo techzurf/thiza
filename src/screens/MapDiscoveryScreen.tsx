@@ -15,6 +15,7 @@ import { CATEGORIES } from '../data/mockBusinesses';
 
 interface MapDiscoveryScreenProps {
   businesses: Business[];
+  currentLocation?: string;
   onBack: () => void;
   onSelectBusiness: (business: Business) => void;
   onSwitchToList: () => void;
@@ -22,11 +23,12 @@ interface MapDiscoveryScreenProps {
 
 export const MapDiscoveryScreen: React.FC<MapDiscoveryScreenProps> = ({
   businesses,
+  currentLocation = 'Tiruppur, Tamil Nadu',
   onBack,
   onSelectBusiness,
   onSwitchToList,
 }) => {
-  const [selectedBusiness, setSelectedBusiness] = useState<Business>(businesses[0] || null);
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(businesses[0] || null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchAreaQuery, setSearchAreaQuery] = useState('');
 
@@ -55,7 +57,7 @@ export const MapDiscoveryScreen: React.FC<MapDiscoveryScreenProps> = ({
               type="text"
               value={searchAreaQuery}
               onChange={(e) => setSearchAreaQuery(e.target.value)}
-              placeholder="Search in Chennai area..."
+              placeholder={`Search in ${currentLocation.split(',')[0]} area...`}
               className="w-full text-xs font-semibold text-[#172033] outline-none"
             />
           </div>

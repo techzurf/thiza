@@ -133,6 +133,9 @@ const TAMIL_DICTIONARY: Record<string, string> = {
   'Try another business name, category or service.': 'வேறு வணிகப் பெயர், வகை அல்லது சேவையை முயற்சிக்கவும்.',
   'No businesses available': 'வணிகங்கள் கிடைக்கவில்லை',
   'There are currently no businesses listed in this category.': 'இந்த வகையில் தற்போது வணிகங்கள் எதுவும் பட்டியலிடப்படவில்லை.',
+  'There are currently no businesses listed in this location.': 'இந்த இடத்தில் தற்போது வணிகங்கள் எதுவும் பட்டியலிடப்படவில்லை.',
+  'No offers available': 'சலுகைகள் கிடைக்கவில்லை',
+  'There are currently no offers listed in this location.': 'இந்த இடத்தில் தற்போது சலுகைகள் எதுவும் பட்டியலிடப்படவில்லை.',
 
   // Home Screen Sections & Banners
   'Discover Local Quality': 'உள்ளூர் தரமான சேவைகளைக் கண்டறியுங்கள்',
@@ -178,7 +181,6 @@ const TAMIL_DICTIONARY: Record<string, string> = {
   'Full Name': 'முழு பெயர்',
   'Email': 'மின்னஞ்சல்',
   'Phone': 'தொலைபேசி',
-  'Save Changes': 'மாற்றங்களைச் சேமிக்கவும்',
 
   // Business Plans & Merchant Hub
   'Business Listing Plans': 'வணிக பட்டியல் திட்டங்கள்',

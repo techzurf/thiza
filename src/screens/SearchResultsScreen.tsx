@@ -11,6 +11,7 @@ interface SearchResultsScreenProps {
   initialQuery?: string;
   businesses: Business[];
   favorites: string[];
+  currentLocation?: string;
   onBack: () => void;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectBusiness: (business: Business) => void;
@@ -20,6 +21,7 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
   initialQuery = '',
   businesses,
   favorites,
+  currentLocation = 'Tiruppur, Tamil Nadu',
   onBack,
   onToggleFavorite,
   onSelectBusiness,
@@ -148,7 +150,9 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
               <span>{t('Recommended')}</span>
             )}
           </span>
-          <span className="font-semibold text-[#0757D9]">Chennai</span>
+          <span className="font-semibold text-[#0757D9]">
+            {currentLocation.split(',')[0]}
+          </span>
         </div>
 
         {/* Compact Result Cards */}
@@ -165,13 +169,13 @@ export const SearchResultsScreen: React.FC<SearchResultsScreenProps> = ({
           ))}
 
           {searchResults.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6">
+            <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs flex flex-col items-center">
               <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
               <p className="font-bold text-base text-[#172033]">
-                {t('No businesses found')}
+                {t('No businesses available')}
               </p>
               <p className="text-xs text-[#667085] mt-1">
-                {t('Try another business name, category or service.')}
+                {t('There are currently no businesses listed in this location.')}
               </p>
             </div>
           )}

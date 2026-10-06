@@ -99,6 +99,17 @@ export const OffersScreen: React.FC<OffersScreenProps> = ({
             }}
           />
         ))}
+
+        {filteredOffers.length === 0 && (
+          <div className="text-center py-14 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs flex flex-col items-center">
+            <p className="font-bold text-base text-[#172033]">
+              {t('No offers available')}
+            </p>
+            <p className="text-xs text-[#667085] mt-1">
+              {t('There are currently no offers listed in this location.')}
+            </p>
+          </div>
+        )}
       </main>
 
       {/* Offer Detail / Claim Bottom Sheet Modal */}

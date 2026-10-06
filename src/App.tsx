@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ScreenId,
   BottomTabId,
@@ -13,6 +13,7 @@ import {
   AppNotification,
 } from './types';
 import { BUSINESSES, CATEGORIES, ALL_OFFERS, INITIAL_NOTIFICATIONS } from './data/mockBusinesses';
+import { filterBusinessesByLocation, filterOffersByLocation } from './utils/locationFilter';
 
 // Common Components
 import { BottomNavigation } from './components/common/BottomNavigation';
@@ -86,6 +87,16 @@ function AppContent() {
 
   const [notifications, setNotifications] = useState<AppNotification[]>(INITIAL_NOTIFICATIONS);
   const [currentLocation, setCurrentLocation] = useState<string>('Tiruppur, Tamil Nadu');
+
+  // Business listings filtered strictly by currently selected location
+  const locationFilteredBusinesses = useMemo(() => {
+    return filterBusinessesByLocation(businesses, currentLocation);
+  }, [businesses, currentLocation]);
+
+  // Offers filtered strictly to businesses in the currently selected location
+  const locationFilteredOffers = useMemo(() => {
+    return filterOffersByLocation(ALL_OFFERS, businesses, currentLocation);
+  }, [businesses, currentLocation]);
 
   // Selected Entities
   const [selectedBusiness, setSelectedBusiness] = useState<Business>(BUSINESSES[0]);
@@ -291,7 +302,7 @@ function AppContent() {
             navigateTo('plumbing-services-detail');
           }}
           onListBusiness={() => navigateTo('list-business')}
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
           onToggleFavorite={handleToggleFavorite}
           unreadCount={unreadCount}
@@ -301,8 +312,9 @@ function AppContent() {
       {/* SCREEN: FIND / DISCOVER */}
       {currentScreen === 'find' && (
         <FindScreen
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
+          currentLocation={currentLocation}
           onBack={handleBack}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
@@ -320,8 +332,9 @@ function AppContent() {
       {/* SCREEN 4: EXPLORE */}
       {currentScreen === 'explore' && (
         <ExploreScreen
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
+          currentLocation={currentLocation}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
           onSelectCategory={handleSelectCategory}
@@ -334,8 +347,9 @@ function AppContent() {
       {currentScreen === 'category-listing' && (
         <CategoryListingScreen
           category={selectedCategory}
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
+          currentLocation={currentLocation}
           onBack={handleBack}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
@@ -350,8 +364,9 @@ function AppContent() {
       {currentScreen === 'search-results' && (
         <SearchResultsScreen
           initialQuery={searchInitialQuery}
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
+          currentLocation={currentLocation}
           onBack={handleBack}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
@@ -377,7 +392,8 @@ function AppContent() {
       {/* SCREEN 8: MAP DISCOVERY */}
       {currentScreen === 'map-discovery' && (
         <MapDiscoveryScreen
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
+          currentLocation={currentLocation}
           onBack={handleBack}
           onSelectBusiness={handleSelectBusiness}
           onSwitchToList={() => {
@@ -390,7 +406,7 @@ function AppContent() {
       {/* SCREEN 9: FAVORITES */}
       {currentScreen === 'favorites' && (
         <FavoritesScreen
-          businesses={businesses}
+          businesses={locationFilteredBusinesses}
           favorites={favorites}
           onToggleFavorite={handleToggleFavorite}
           onSelectBusiness={handleSelectBusiness}
@@ -404,7 +420,8 @@ function AppContent() {
       {/* SCREEN 10: OFFERS */}
       {currentScreen === 'offers' && (
         <OffersScreen
-          businesses={businesses}
+          offers={locationFilteredOffers}
+          businesses={locationFilteredBusinesses}
           onSelectBusiness={handleSelectBusiness}
           selectedOfferModal={selectedOfferModal}
           onSetSelectedOfferModal={setSelectedOfferModal}

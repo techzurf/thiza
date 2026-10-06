@@ -18,6 +18,7 @@ interface CategoryListingScreenProps {
   category: Category;
   businesses: Business[];
   favorites: string[];
+  currentLocation?: string;
   onBack: () => void;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectBusiness: (business: Business) => void;
@@ -28,6 +29,7 @@ export const CategoryListingScreen: React.FC<CategoryListingScreenProps> = ({
   category,
   businesses,
   favorites,
+  currentLocation: _currentLocation,
   onBack,
   onToggleFavorite,
   onSelectBusiness,
@@ -149,7 +151,7 @@ export const CategoryListingScreen: React.FC<CategoryListingScreenProps> = ({
               {t('No businesses available')}
             </h3>
             <p className="text-xs text-[#667085] mt-1.5 max-w-xs leading-relaxed">
-              {t('There are currently no businesses listed in this category.')}
+              {t('There are currently no businesses listed in this location.')}
             </p>
             <button
               type="button"

@@ -147,6 +147,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   );
   const popularBusinesses = [...businesses].sort((a, b) => b.rating - a.rating);
 
+  // Offers belonging strictly to businesses in the currently selected location
+  const locationOffers = useMemo(() => {
+    return ALL_OFFERS.filter((o) =>
+      businesses.some((b) => b.id === o.businessId)
+    );
+  }, [businesses]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const homeServicesCardRef = useRef<HTMLDivElement>(null);
   const [isHomeServicesVisible, setIsHomeServicesVisible] = useState(false);
@@ -540,7 +547,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 {t('Explore Categories')}
               </h2>
               <p className="text-xs text-[#667085]">
-                {t('Discover verified businesses across Chennai')}
+                {language === 'Tamil'
+                  ? `${currentLocation.split(',')[0]} முழுவதிலும் சரிபார்க்கப்பட்ட வணிகங்களைக் கண்டறியுங்கள்`
+                  : `Discover verified businesses across ${currentLocation.split(',')[0]}`}
               </p>
             </div>
 
@@ -635,18 +644,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Horizontal scrollable cards */}
-          <div className="flex items-center gap-3.5 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
-            {featuredBusinesses.map((b) => (
-              <BusinessCard
-                key={b.id}
-                business={b}
-                variant="horizontal"
-                isFavorite={favorites.includes(b.id)}
-                onToggleFavorite={onToggleFavorite}
-                onClick={onSelectBusiness}
-              />
-            ))}
-          </div>
+          {featuredBusinesses.length > 0 ? (
+            <div className="flex items-center gap-3.5 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
+              {featuredBusinesses.map((b) => (
+                <BusinessCard
+                  key={b.id}
+                  business={b}
+                  variant="horizontal"
+                  isFavorite={favorites.includes(b.id)}
+                  onToggleFavorite={onToggleFavorite}
+                  onClick={onSelectBusiness}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full text-center py-7 bg-white rounded-3xl border border-[#E2E8F0] p-5 shadow-xs flex flex-col items-center justify-center">
+              <p className="font-bold text-sm text-[#172033]">
+                {t('No businesses available')}
+              </p>
+              <p className="text-xs text-[#667085] mt-1">
+                {t('There are currently no businesses listed in this location.')}
+              </p>
+            </div>
+          )}
         </section>
 
         {/* SECTION: Single Compact Service Category Card (3x2 Grid) */}
@@ -757,32 +777,45 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={onViewAllOffers}
-              className="text-xs font-bold text-[#0757D9] hover:text-[#008CFF] flex items-center gap-0.5 min-h-[44px] py-2 cursor-pointer"
-            >
-              <span>{t('View All')}</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {locationOffers.length > 0 && (
+              <button
+                type="button"
+                onClick={onViewAllOffers}
+                className="text-xs font-bold text-[#0757D9] hover:text-[#008CFF] flex items-center gap-0.5 min-h-[44px] py-2 cursor-pointer"
+              >
+                <span>{t('View All')}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Horizontal compact offer cards */}
-          <div className="flex items-center gap-3.5 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
-            {ALL_OFFERS.slice(0, 4).map((offer, index) => (
-              <OfferCard
-                key={offer.id}
-                offer={offer}
-                compact
-                colorThemeIndex={index}
-                onViewOffer={onSelectOffer}
-                onSelectBusiness={(id) => {
-                  const b = businesses.find((item) => item.id === id);
-                  if (b) onSelectBusiness(b);
-                }}
-              />
-            ))}
-          </div>
+          {locationOffers.length > 0 ? (
+            <div className="flex items-center gap-3.5 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
+              {locationOffers.slice(0, 4).map((offer, index) => (
+                <OfferCard
+                  key={offer.id}
+                  offer={offer}
+                  compact
+                  colorThemeIndex={index}
+                  onViewOffer={onSelectOffer}
+                  onSelectBusiness={(id) => {
+                    const b = businesses.find((item) => item.id === id);
+                    if (b) onSelectBusiness(b);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6 bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-xs">
+              <p className="font-bold text-sm text-[#172033]">
+                {t('No offers available')}
+              </p>
+              <p className="text-xs text-[#667085] mt-1">
+                {t('There are currently no offers listed in this location.')}
+              </p>
+            </div>
+          )}
         </section>
 
         {/* SECTION: Popular Near You */}
@@ -797,29 +830,42 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={onViewAllPopular}
-              className="text-xs font-bold text-[#0757D9] hover:text-[#008CFF] flex items-center gap-0.5 min-h-[44px] py-2 cursor-pointer"
-            >
-              <span>{t('View All')}</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {popularBusinesses.length > 0 && (
+              <button
+                type="button"
+                onClick={onViewAllPopular}
+                className="text-xs font-bold text-[#0757D9] hover:text-[#008CFF] flex items-center gap-0.5 min-h-[44px] py-2 cursor-pointer"
+              >
+                <span>{t('View All')}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Vertical cards stack */}
-          <div className="flex flex-col gap-4">
-            {popularBusinesses.slice(0, 4).map((b) => (
-              <BusinessCard
-                key={b.id}
-                business={b}
-                variant="vertical"
-                isFavorite={favorites.includes(b.id)}
-                onToggleFavorite={onToggleFavorite}
-                onClick={onSelectBusiness}
-              />
-            ))}
-          </div>
+          {popularBusinesses.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {popularBusinesses.slice(0, 4).map((b) => (
+                <BusinessCard
+                  key={b.id}
+                  business={b}
+                  variant="vertical"
+                  isFavorite={favorites.includes(b.id)}
+                  onToggleFavorite={onToggleFavorite}
+                  onClick={onSelectBusiness}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs flex flex-col items-center justify-center">
+              <p className="font-bold text-base text-[#172033]">
+                {t('No businesses available')}
+              </p>
+              <p className="text-xs text-[#667085] mt-1">
+                {t('There are currently no businesses listed in this location.')}
+              </p>
+            </div>
+          )}
         </section>
 
         {/* SECTION: 3-Slide Image Carousel */}

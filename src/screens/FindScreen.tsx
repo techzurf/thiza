@@ -14,10 +14,12 @@ import {
 } from 'lucide-react';
 import { Business } from '../types';
 import { BusinessCard } from '../components/common/BusinessCard';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FindScreenProps {
   businesses: Business[];
   favorites: string[];
+  currentLocation?: string;
   onBack: () => void;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectBusiness: (business: Business) => void;
@@ -26,10 +28,12 @@ interface FindScreenProps {
 export const FindScreen: React.FC<FindScreenProps> = ({
   businesses,
   favorites,
+  currentLocation = 'Tiruppur, Tamil Nadu',
   onBack,
   onToggleFavorite,
   onSelectBusiness,
 }) => {
+  const { t, language } = useLanguage();
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -166,7 +170,9 @@ export const FindScreen: React.FC<FindScreenProps> = ({
               <Sparkles className="w-4 h-4 text-[#08D9F5]" />
             </h2>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              Explore trusted partners across Chennai curated with high ratings, verified badges, and exclusive offers.
+              {language === 'Tamil'
+                ? `${currentLocation.split(',')[0]} முழுவதிலும் உயர்தர மதிப்பீடுகள் மற்றும் பிரத்யேக சலுகைகளுடன் சரிபார்க்கப்பட்ட கூட்டாளர்களை ஆராயுங்கள்.`
+                : `Explore trusted partners across ${currentLocation.split(',')[0]} curated with high ratings, verified badges, and exclusive offers.`}
             </p>
           </div>
         </section>
@@ -179,18 +185,29 @@ export const FindScreen: React.FC<FindScreenProps> = ({
             </span>
           </div>
 
-          <div className="space-y-3.5">
-            {filteredBusinesses.map((b) => (
-              <BusinessCard
-                key={b.id}
-                business={b}
-                isFavorite={favorites.includes(b.id)}
-                onToggleFavorite={onToggleFavorite}
-                onClick={onSelectBusiness}
-                variant="vertical"
-              />
-            ))}
-          </div>
+          {filteredBusinesses.length > 0 ? (
+            <div className="space-y-3.5">
+              {filteredBusinesses.map((b) => (
+                <BusinessCard
+                  key={b.id}
+                  business={b}
+                  isFavorite={favorites.includes(b.id)}
+                  onToggleFavorite={onToggleFavorite}
+                  onClick={onSelectBusiness}
+                  variant="vertical"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs flex flex-col items-center">
+              <p className="font-bold text-base text-[#172033]">
+                {t('No businesses available')}
+              </p>
+              <p className="text-xs text-[#667085] mt-1">
+                {t('There are currently no businesses listed in this location.')}
+              </p>
+            </div>
+          )}
         </section>
       </main>
     </div>

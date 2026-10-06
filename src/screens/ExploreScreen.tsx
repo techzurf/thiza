@@ -11,6 +11,7 @@ import { useLanguage } from '../context/LanguageContext';
 interface ExploreScreenProps {
   businesses: Business[];
   favorites: string[];
+  currentLocation?: string;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectBusiness: (business: Business) => void;
   onSelectCategory: (category: Category) => void;
@@ -23,6 +24,7 @@ type SortOption = 'recommended' | 'distance' | 'rating' | 'newest';
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({
   businesses,
   favorites,
+  currentLocation = 'Tiruppur, Tamil Nadu',
   onToggleFavorite,
   onSelectBusiness,
   onSelectCategory: _onSelectCategory,
@@ -82,7 +84,9 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
               {t('Explore')} Tizara
             </h1>
             <p className="text-xs text-[#667085]">
-              {t('Discover verified businesses across Chennai')}
+              {language === 'Tamil'
+                ? `${currentLocation.split(',')[0]} முழுவதிலும் சரிபார்க்கப்பட்ட வணிகங்களைக் கண்டறியுங்கள்`
+                : `Discover verified businesses across ${currentLocation.split(',')[0]}`}
             </p>
           </div>
 
@@ -173,23 +177,25 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({
           ))}
 
           {filteredBusinesses.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-3xl border border-[#E2E8F0] p-6">
+            <div className="text-center py-14 bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs flex flex-col items-center">
               <p className="font-bold text-base text-[#172033]">
-                {language === 'Tamil' ? 'வணிகங்கள் எதுவும் பொருந்தவில்லை' : 'No businesses match your filter'}
+                {t('No businesses available')}
               </p>
               <p className="text-xs text-[#667085] mt-1">
-                {t('Try another business name, category or service.')}
+                {t('There are currently no businesses listed in this location.')}
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategoryId(null);
-                  setSearchQuery('');
-                }}
-                className="mt-4 px-4 py-2 bg-[#0757D9] text-white text-xs font-bold rounded-xl cursor-pointer"
-              >
-                {t('Reset Filters')}
-              </button>
+              {(selectedCategoryId || searchQuery) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategoryId(null);
+                    setSearchQuery('');
+                  }}
+                  className="mt-4 px-4 py-2 bg-[#0757D9] text-white text-xs font-bold rounded-xl cursor-pointer"
+                >
+                  {t('Reset Filters')}
+                </button>
+              )}
             </div>
           )}
         </div>
