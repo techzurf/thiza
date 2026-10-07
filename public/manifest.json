@@ -1,0 +1,24 @@
+{
+  "name": "Tizara - Business Discovery",
+  "short_name": "Tizara",
+  "description": "Discover local businesses, services, professionals, deals, and offers with Tizara.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F8FC",
+  "theme_color": "#0057D9",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dv16a8l1l/image/upload/v1791267372/Untitled_design_24_jmddjq.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://res.cloudinary.com/dv16a8l1l/image/upload/v1791267372/Untitled_design_24_jmddjq.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
